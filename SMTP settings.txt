@@ -1,0 +1,6 @@
+SMTP configuration
+Host	smtp.ethereal.email
+Port	587
+Security	STARTTLS
+Username	jeanette.kuhlman@ethereal.email
+Password	cX5HHcCwP8zJnBBqHx
