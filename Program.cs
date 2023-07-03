@@ -4,6 +4,7 @@ using EmailSender.Services.Mapping;
 using EmailSender.Services.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddAutoMapper(typeof(MailMappingConfiguration));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+// configure strongly typed settings object
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
