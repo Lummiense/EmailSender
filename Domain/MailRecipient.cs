@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Contracts;
+﻿using Org.BouncyCastle.Cms;
 
 namespace EmailSender.Domain
 {

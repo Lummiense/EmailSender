@@ -1,6 +1,7 @@
 ﻿using EmailSender.Domain;
 using EmailSender.Services.Data.DataConfiguration;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Cms;
 using System.ComponentModel;
 
 namespace EmailSender.Services.Data
@@ -10,9 +11,8 @@ namespace EmailSender.Services.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-
         public DbSet<Mail> Mails { get; set; }
-        public DbSet<Recipient> Recipients { get; set; }        
+        public DbSet<Recipient> Recipients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

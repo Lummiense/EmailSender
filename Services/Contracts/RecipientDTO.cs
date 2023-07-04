@@ -1,6 +1,6 @@
 ﻿using EmailSender.Domain;
 
-namespace EmailSender.Services.Models
+namespace EmailSender.Services.Contracts
 {
     public class RecipientDTO
     {

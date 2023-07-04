@@ -4,7 +4,9 @@ namespace EmailSender.Services
 {
     public interface IMailService
     {
-        Task<Guid> SendMailAsync(MailDTO mailDTO);
-        Task<ICollection<MailDTO>> GetAllMailsAsync();
+        Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO);
+        Task SaveMails(List<MailDTO> mails);
+
+        Task<IQueryable<MailDTO>> GetAllMailsAsync();
     }
 }

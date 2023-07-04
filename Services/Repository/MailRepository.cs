@@ -11,10 +11,10 @@ namespace EmailSender.Services.Repository
         } 
      
 
-        public async Task<List<Mail>> GetMailsAsync()
+        public async Task<IQueryable<Mail>> GetMailsAsync()
         {
-            var result = await _dbContext.Set<Mail>().Include(r=>r.MailRecipients).AsNoTracking().ToListAsync();
-            return result;
+            var result = await _dbContext.Set<Mail>().Include(r => r.MailRecipients).AsNoTracking().ToListAsync();
+            return result.AsQueryable();
         }
 
         

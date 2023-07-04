@@ -1,6 +1,7 @@
 ﻿using EmailSender.Domain;
 using EmailSender.Services.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EmailSender.Services.Repository
 {
@@ -12,16 +13,21 @@ namespace EmailSender.Services.Repository
         {
             _dbContext = dbContext;
         }
-        public async Task<Guid> AddAsync(T entity)
+        public async Task AddRangeAsync(List<T> entities)
         {
-            var result = await _dbContext.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return result.Entity.Id;
+            await _dbContext.AddRangeAsync(entities);
+            await _dbContext.SaveChangesAsync();            
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<IQueryable<T>> GetAllAsync()
         {
             var result = await _dbContext.Set<T>().ToListAsync();
+            return result.AsQueryable();
+        }
+
+        public async Task<T> GetByFilter(Expression<Func<T, bool>> predicate)
+        {
+            var result =await _dbContext.Set<T>().AsNoTracking().Where(predicate).FirstOrDefaultAsync();
             return result;
         }
 
