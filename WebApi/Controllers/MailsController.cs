@@ -34,8 +34,13 @@ namespace EmailSender.WebApi.Controllers
             if (mails == null)
             {
                 throw new Exception();
-            }           
-            var result = _mapper.Map<IQueryable<MailResponseModel>>(mails).AsQueryable();
+            }
+            var result = _mapper.Map<List<MailResponseModel>>(mails);
+            /*foreach (var mail in result)
+            {
+                mail.Recipients.Add(mails.Select(x=>x.MailRecipi);
+               
+            }*/
             return Ok(result);
         }
 

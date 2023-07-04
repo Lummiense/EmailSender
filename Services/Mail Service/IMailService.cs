@@ -7,6 +7,6 @@ namespace EmailSender.Services
         Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO);
         Task SaveMails(List<MailDTO> mails);
 
-        Task<IQueryable<MailDTO>> GetAllMailsAsync();
+        Task<ICollection<MailDTO>> GetAllMailsAsync();
     }
 }

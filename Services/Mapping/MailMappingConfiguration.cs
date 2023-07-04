@@ -12,7 +12,8 @@ namespace EmailSender.Services.Mapping
             CreateMap<Mail, MailDTO>().ReverseMap();
 
             CreateMap<MailDTO, MailResponseModel>()
-                .ForMember(d => d.Recipients, map => map.MapFrom(src=>src.MailRecipients.Select(x=>x.Recipient.Email)));
+                .ForMember(d => d.Recipients, map => map.Ignore());
+            
 
             CreateMap<MailRequestModel, MailDTO>()
                 .ForMember(d => d.Id, map => map.Ignore())

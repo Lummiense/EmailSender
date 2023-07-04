@@ -69,10 +69,10 @@ namespace EmailSender.Services.Mail_Service
             await _mailRepository.AddRangeAsync(entities);
             await _mailRepository.SaveChangesAsync();
         }
-        public async Task<IQueryable<MailDTO>> GetAllMailsAsync()
+        public async Task<ICollection<MailDTO>> GetAllMailsAsync()
         {
             var entities = await _mailRepository.GetMailsAsync();
-            var mailsDTO = _mapper.Map<IQueryable<MailDTO>>(entities);
+            var mailsDTO = _mapper.Map<List<MailDTO>>(entities);
             return mailsDTO;           
         }       
     }
