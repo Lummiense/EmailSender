@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EmailSender.Services.Data.DataConfiguration
 {
+    /// <summary>
+    /// Класс с конфигурацией отношений таблиц Письмо - Получатель в базе данных.
+    /// </summary>
     public class MailRecipientDbConfiguration: IEntityTypeConfiguration<MailRecipient>
-    {
+    {       
         public void Configure(EntityTypeBuilder<MailRecipient> builder)
         {
             builder.HasKey(k => new {k.MailId,k.RecipientId});

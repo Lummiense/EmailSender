@@ -1,13 +1,12 @@
-﻿using Org.BouncyCastle.Cms;
+﻿using EmailSender.Domain;
 
-namespace EmailSender.Domain
+namespace EmailSender.Services.Contracts
 {
     /// <summary>
-    /// Сущность соединительной таблицы Письмо - Получаетель.
+    /// Соединительная таблица для моделей данных Письмо - Получатель.
     /// </summary>
-    public class MailRecipient
+    public class MailRecipientDTO
     {
-
         /// <summary>
         /// Уникальный идентификатор письма из сущности Письмо.
         /// </summary>

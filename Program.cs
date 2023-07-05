@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(x=>x.UseSqlite(builder.Configuration.GetConnectionString("DbConnect")));
 builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IMailRepository,MailRepository>();
+builder.Services.AddTransient<IRecipientRepository, RecipientRepository>();
 builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddAutoMapper(typeof(MailMappingConfiguration));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

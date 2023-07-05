@@ -2,6 +2,9 @@
 
 namespace EmailSender.Services
 {
+    /// <summary>
+    /// Интерфейс сервиса формирования сообщений.
+    /// </summary>
     public interface IMailService
     {
         Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO);

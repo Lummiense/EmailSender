@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmailSender.Domain;
 using EmailSender.Services;
+using EmailSender.Services.Contracts;
 using EmailSender.Services.Models;
 using EmailSender.Services.Repository;
 using EmailSender.WebApi.Models;
@@ -10,14 +11,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmailSender.WebApi.Controllers
 {
+    /// <summary>
+    /// Контроллер сервиса формирования сообщений.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MailsController : ControllerBase
     {
         private IMailService _mailService;
-        private IRepository<Recipient> _recipientRepository;
+        private IRecipientRepository _recipientRepository;
         private IMapper _mapper;
-        public MailsController(IMailService mailService, IRepository<Recipient> recipientRepository, IMapper mapper)
+        public MailsController(IMailService mailService, IRecipientRepository recipientRepository, IMapper mapper)
         {
             _mailService = mailService;
             _recipientRepository = recipientRepository;
@@ -35,12 +39,8 @@ namespace EmailSender.WebApi.Controllers
             {
                 throw new Exception();
             }
-            var result = _mapper.Map<List<MailResponseModel>>(mails);
-            /*foreach (var mail in result)
-            {
-                mail.Recipients.Add(mails.Select(x=>x.MailRecipi);
-               
-            }*/
+            var result = _mapper.Map<List<MailResponseModel>>(mails);     
+            
             return Ok(result);
         }
 
@@ -56,10 +56,10 @@ namespace EmailSender.WebApi.Controllers
             var mailDTO = _mapper.Map<MailDTO>(mailRequest);
             foreach (var r in mailRequest.Recipients)
             {
-                var recipient =await _recipientRepository.GetByFilter(x => x.Email == r);
+                var recipient =await _recipientRepository.GetByFilter(x => x.Recipient.Email == r);
                 if (recipient == null)
                 {
-                    mailDTO.MailRecipients = new List<MailRecipient>{(new MailRecipient()
+                    mailDTO.MailRecipients = new List<MailRecipientDTO>{(new MailRecipientDTO()
                     {
                         MailId = Guid.NewGuid(),
                         RecipientId = Guid.NewGuid(),
@@ -73,10 +73,10 @@ namespace EmailSender.WebApi.Controllers
                 
                 else
                 {
-                    mailDTO.MailRecipients = new List<MailRecipient>{(new MailRecipient()
+                    mailDTO.MailRecipients = new List<MailRecipientDTO>{(new MailRecipientDTO()
                     {
                         MailId = Guid.NewGuid(),
-                        RecipientId = recipient.Id,
+                        RecipientId = recipient.RecipientId,                         
                     }) };
                 }
             }

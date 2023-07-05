@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace EmailSender.Services.Data
 {
+    /// <summary>
+    /// Класс конфигурации таблиц базы данных.
+    /// </summary>
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)

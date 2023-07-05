@@ -10,11 +10,13 @@ using MimeKit.Text;
 
 namespace EmailSender.Services.Mail_Service
 {
+    /// <summary>
+    /// Сервис формирования сообщений.
+    /// </summary>
     public class MailService : IMailService
     {
         private readonly IMapper _mapper;
-        private readonly IMailRepository _mailRepository;
-        //private readonly IRepository<Recipient> _recipientRepository;
+        private readonly IMailRepository _mailRepository;        
         private readonly SMTPSettings _smtp;
         public MailService(IMapper mapper, IMailRepository mailRepository, IOptions<SMTPSettings> smtp)
         {
@@ -24,6 +26,11 @@ namespace EmailSender.Services.Mail_Service
             _smtp = smtp.Value;
         }
 
+        /// <summary>
+        /// Метод отправки сообщений.
+        /// </summary>
+        /// <param name="mailDTO">Модель данных сущности Письмо.</param>
+        /// <returns>Список сформированных моделей писем.</returns>
         public Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO)
         {
             var mails = new List<MailDTO>();
@@ -44,31 +51,38 @@ namespace EmailSender.Services.Mail_Service
                 smtp.Authenticate(_smtp.SmtpUser, _smtp.SmtpPass);
                 try
                 {
-                    smtp.Send(email);                    
+                    smtp.Send(email);
+                    mailDTO.Result = "OK";
+                    mailDTO.FailedMessage = "";
                 }
                 catch (Exception ex)
                 {
                     mailDTO.Result = "Failed";
-                    mailDTO.FailedMessage=ex.Message;
-                    throw;
+                    mailDTO.FailedMessage=ex.Message;                    
                  }
-                finally
-                {
-                    mailDTO.Result = "OK";
-                    mailDTO.FailedMessage = "";
-                }
+                
                 smtp.Disconnect(true);
                 #endregion
                 mails.Add(mailDTO);
             }
             return Task.FromResult(mails);
         } 
+
+        /// <summary>
+        /// Метод сохранение списка сформированных писем.
+        /// </summary>
+        /// <param name="mails">Список сформированных писем.</param>        
         public async Task SaveMails(List<MailDTO> mails)
         {
             var entities = _mapper.Map<List<Mail>>(mails);
             await _mailRepository.AddRangeAsync(entities);
             await _mailRepository.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Метод выгрузки из базы данных списка всех сформированных писем.
+        /// </summary>
+        /// <returns>Список всех сформированных писем.</returns>
         public async Task<ICollection<MailDTO>> GetAllMailsAsync()
         {
             var entities = await _mailRepository.GetMailsAsync();
