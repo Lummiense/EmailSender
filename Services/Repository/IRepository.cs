@@ -9,7 +9,7 @@ namespace EmailSender.Services.Repository
     /// <typeparam name="T">Любая сущность domain-слоя, унаследованная от базовой сущности.</typeparam>
     public interface IRepository<T> where T : IEntity
     {
-        Task AddRangeAsync(List<T> entities);      
+        Task AddAsync(T entities);      
         Task<IQueryable<T>> GetAllAsync();
         Task SaveChangesAsync();
     }

@@ -7,9 +7,8 @@ namespace EmailSender.Services
     /// </summary>
     public interface IMailService
     {
-        Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO);
-        Task SaveMails(List<MailDTO> mails);
-
+        Task<MailDTO> SendMailAsync(MailDTO mailDTO);        
+        Task SaveMail(MailDTO mails);
         Task<ICollection<MailDTO>> GetAllMailsAsync();
     }
 }

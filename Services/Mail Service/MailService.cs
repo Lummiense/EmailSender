@@ -21,8 +21,7 @@ namespace EmailSender.Services.Mail_Service
         public MailService(IMapper mapper, IMailRepository mailRepository, IOptions<SMTPSettings> smtp)
         {
             _mapper = mapper;
-            _mailRepository = mailRepository;
-            //_recipientRepository = recipientRepository;
+            _mailRepository = mailRepository;            
             _smtp = smtp.Value;
         }
 
@@ -30,27 +29,27 @@ namespace EmailSender.Services.Mail_Service
         /// Метод отправки сообщений.
         /// </summary>
         /// <param name="mailDTO">Модель данных сущности Письмо.</param>
-        /// <returns>Список сформированных моделей писем.</returns>
-        public Task<List<MailDTO>> SendMailAsync(MailDTO mailDTO)
-        {
-            var mails = new List<MailDTO>();
+        /// <returns>Cформированная модель письма.</returns>        
+        public Task<MailDTO>SendMailAsync(MailDTO mailDTO)
+        {            
             foreach (var r in mailDTO.MailRecipients)
             {               
                 mailDTO.CreationDate = DateTime.Now;
+
                 #region Create message
                 var email = new MimeMessage();
-                email.From.Add(MailboxAddress.Parse(_smtp.EmailFrom));
-                email.To.Add(MailboxAddress.Parse(r.Recipient.Email));
-                email.Subject = mailDTO.Subject;
-                email.Body = new TextPart(TextFormat.Plain) { Text = mailDTO.Body};
-                #endregion
-
-                #region Send Message
                 var smtp = new SmtpClient();
-                smtp.Connect(_smtp.SmtpHost, _smtp.SmtpPort);
-                smtp.Authenticate(_smtp.SmtpUser, _smtp.SmtpPass);
                 try
-                {
+                {                    
+                    email.From.Add(MailboxAddress.Parse(_smtp.EmailFrom));
+                    email.To.Add(MailboxAddress.Parse(r.Recipient.Email));
+                    email.Subject = mailDTO.Subject;
+                    email.Body = new TextPart(TextFormat.Plain) { Text = mailDTO.Body};
+                    #endregion
+
+                    #region Send Message                    
+                    smtp.Connect(_smtp.SmtpHost, _smtp.SmtpPort);
+                    smtp.Authenticate(_smtp.SmtpUser, _smtp.SmtpPass);                
                     smtp.Send(email);
                     mailDTO.Result = "OK";
                     mailDTO.FailedMessage = "";
@@ -63,19 +62,20 @@ namespace EmailSender.Services.Mail_Service
                 
                 smtp.Disconnect(true);
                 #endregion
-                mails.Add(mailDTO);
+                //r.Recipient = null;
+                
             }
-            return Task.FromResult(mails);
-        } 
+            return Task.FromResult(mailDTO);            
+        }
 
         /// <summary>
         /// Метод сохранение списка сформированных писем.
         /// </summary>
-        /// <param name="mails">Список сформированных писем.</param>        
-        public async Task SaveMails(List<MailDTO> mails)
+        /// <param name="mails">Список сформированных писем.</param>         
+        public async Task SaveMail(MailDTO mails)
         {
-            var entities = _mapper.Map<List<Mail>>(mails);
-            await _mailRepository.AddRangeAsync(entities);
+            var entity = _mapper.Map<Mail>(mails);
+            await _mailRepository.AddAsync(entity);
             await _mailRepository.SaveChangesAsync();
         }
 

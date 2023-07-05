@@ -19,12 +19,12 @@ namespace EmailSender.Services.Repository
         }
 
         /// <summary>
-        /// Метод добавления списка сущностей.
+        /// Метод добавления сущностей.
         /// </summary>
-        /// <param name="entities">Список сущностей.</param>
-        public async Task AddRangeAsync(List<T> entities)
+        /// <param name="entity">Сущность.</param>
+        public async Task AddAsync(T entity)
         {
-            await _dbContext.AddRangeAsync(entities);
+            await _dbContext.AddAsync(entity);
             await _dbContext.SaveChangesAsync();            
         }
 

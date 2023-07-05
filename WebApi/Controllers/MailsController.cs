@@ -53,13 +53,14 @@ namespace EmailSender.WebApi.Controllers
         [HttpPost]
         public async Task <IActionResult> CreateMail(MailRequestModel mailRequest)
         {
-            var mailDTO = _mapper.Map<MailDTO>(mailRequest);
+            var mailDTO = _mapper.Map<MailDTO>(mailRequest);            
+            List<MailRecipientDTO> mailRecipients = new List<MailRecipientDTO>();            
             foreach (var r in mailRequest.Recipients)
             {
                 var recipient =await _recipientRepository.GetByFilter(x => x.Recipient.Email == r);
                 if (recipient == null)
                 {
-                    mailDTO.MailRecipients = new List<MailRecipientDTO>{(new MailRecipientDTO()
+                    mailRecipients.Add(new MailRecipientDTO()
                     {
                         MailId = Guid.NewGuid(),
                         RecipientId = Guid.NewGuid(),
@@ -68,25 +69,26 @@ namespace EmailSender.WebApi.Controllers
                             Email = r,
                             Name = r,
                         }
-                    }) };
-                }
-                
+                    });
+                }                
                 else
                 {
-                    mailDTO.MailRecipients = new List<MailRecipientDTO>{(new MailRecipientDTO()
+                    mailRecipients.Add(new MailRecipientDTO()
                     {
-                        MailId = Guid.NewGuid(),
-                        RecipientId = recipient.RecipientId,                         
-                    }) };
+                        MailId = mailDTO.Id,
+                        RecipientId = recipient.RecipientId,
+                        //Recipient = recipient.Recipient,
+                    });                    
                 }
             }
+            mailDTO.MailRecipients = mailRecipients;
             var resultMessages = await _mailService.SendMailAsync(mailDTO);
 
            
             
             try
             {
-                await _mailService.SaveMails(resultMessages);
+                await _mailService.SaveMail(resultMessages);
             }
             catch (Exception ex)
             {
